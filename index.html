@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Redirecting...</title>
+    <script>
+      // Parse query parameter
+      function getRedirectURL() {
+        const params = new URLSearchParams(window.location.search);
+        const url = params.get("url");
+        // Optional: validate the URL (basic check)
+        if (url && url.startsWith("http")) {
+          return url;
+        }
+        return null;
+      }
+
+      const target = getRedirectURL();
+      if (target) {
+        window.location.href = target;
+      }
+    </script>
+  </head>
+  <body>
+    <p>
+      Redirecting...
+      <span id="fallback"></span>
+    </p>
+    <script>
+      if (target) {
+        document.getElementById("fallback").innerHTML = 
+          `<a href="${target}">Click here if not redirected</a>`;
+      } else {
+        document.getElementById("fallback").textContent = 
+          "Invalid or missing redirect URL.";
+      }
+    </script>
+  </body>
+</html>
