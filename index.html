@@ -3,36 +3,34 @@
   <head>
     <title>Redirecting...</title>
     <script>
-      // Parse query parameter
-      function getRedirectURL() {
+      async function redirectById() {
         const params = new URLSearchParams(window.location.search);
-        const url = params.get("url");
-        // Optional: validate the URL (basic check)
-        if (url && url.startsWith("http")) {
-          return url;
+        const id = params.get("id");
+
+        if (!id) {
+          document.getElementById("status").textContent = "Missing ID parameter.";
+          return;
         }
-        return null;
+
+        try {
+          const response = await fetch("links.json");
+          const links = await response.json();
+          const targetUrl = links[id];
+
+          if (targetUrl) {
+            window.location.href = targetUrl;
+          } else {
+            document.getElementById("status").textContent = "No URL found for ID: " + id;
+          }
+        } catch (err) {
+          document.getElementById("status").textContent = "Failed to load links.";
+        }
       }
 
-      const target = getRedirectURL();
-      if (target) {
-        window.location.href = target;
-      }
+      redirectById();
     </script>
   </head>
   <body>
-    <p>
-      Redirecting...
-      <span id="fallback"></span>
-    </p>
-    <script>
-      if (target) {
-        document.getElementById("fallback").innerHTML = 
-          `<a href="${target}">Click here if not redirected</a>`;
-      } else {
-        document.getElementById("fallback").textContent = 
-          "Invalid or missing redirect URL.";
-      }
-    </script>
+    <p id="status">Redirecting...</p>
   </body>
 </html>
